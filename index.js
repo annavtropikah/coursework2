@@ -20,6 +20,13 @@ export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
 
+
+
+
+
+export let token = localStorage.getItem("token");
+
+
 const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;

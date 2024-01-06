@@ -196,3 +196,17 @@
   width: 100%;
   text-align: center;
 }
+
+
+
+.like-button {
+  margin-left: 10px;
+  background-image: url("./assets/images/like-not-active.svg");
+  background-repeat: no-repeat;
+  width: 22px;
+  height: 22px;
+}
+
+.-active-like {
+  background-image: url("./assets/images/like-active.svg");
+}
