@@ -1,12 +1,11 @@
-import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, token, getToken } from "../index.js";
-import { addLike, getPosts } from "../api.js";
+import { posts, goToPage, token } from "../index.js";
 
 
 const appEl = document.getElementById("app");
 
-export function renderPostsPageComponent() {
+export function renderUserPostsPageComponent() {
 
   // TODO: реализовать рендер постов из api- сделано,но кривенько с лайками
   console.log("Актуальный список постов:", posts);
@@ -36,7 +35,7 @@ export function renderPostsPageComponent() {
 
                     <div class="post-likes">
                   
-                      <button data-post-id="${post.id}" class="like-button ${post.isLiked ? "-active-like" : ''}" data-index="${index}"></button>
+                      <button data-post-id="${post.likes.id}" class="like-button ${post.isLiked ? "-active-like" : ''}" data-index="${index}"></button>
 
                       <p class="post-likes-text">
                         Нравится: <strong>${post.likes.length}</strong>
@@ -58,7 +57,7 @@ export function renderPostsPageComponent() {
                   </ul>
                   </div>
                   `;
-  }).join('');
+            }).join('');
 
   appEl.innerHTML = appHtml;
 
@@ -77,24 +76,32 @@ export function renderPostsPageComponent() {
       });
     });
   }
+initLikeListeners()
 
-
-  initLikeListeners();
 }
 
-export function initLikeListeners() {
-  const likeButtonList = document.querySelectorAll(".like-button")
-  for (const likeButton of likeButtonList) {
-    likeButton.addEventListener("click", () => {
-      console.log(likeButton.dataset);
-      addLike({ id: likeButton.dataset.postId, token: getToken() })
-      // goToPage(POSTS_PAGE)
-    })
+
+
+const initLikeListeners = () => {
+  const likeButtons = document.querySelectorAll('.like-button');
+  for (const likeButton of likeButtons) {
+    likeButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (!token) {
+        alert("autorize")
+        return
+      }
+      const index = likeButton.dataset.index;
+      posts[index].likes += posts[index].isLiked ? -1 : +1;
+      posts[index].isLiked = !posts[index].isLiked;
+
+      renderPostsPageComponent();
+    });
   }
-  
-}
-//1. Запросить новые данные
-//2. Вызвать перерисовку
+};
+
+
+
 
 
 
@@ -153,10 +160,10 @@ export function renderUserPage() {
                   </ul>
                   </div>
                   `;
-  }).join('');
+            }).join('');
 
   appEl.innerHTML = appUserHtml;
-
+  
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });

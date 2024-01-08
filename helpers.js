@@ -2,6 +2,10 @@ export function saveUserToLocalStorage(user) {
   window.localStorage.setItem("user", JSON.stringify(user));
 }
 
+
+
+//зачем window???????????????????
+
 export function getUserFromLocalStorage(user) {
   try {
     return JSON.parse(window.localStorage.getItem("user"));

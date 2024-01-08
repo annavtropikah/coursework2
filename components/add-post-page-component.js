@@ -23,13 +23,17 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 </div>
           <label>
             Опишите фотографию:
-            <textarea class="input textarea" rows="4"></textarea>
+            <textarea id="textarea-input" class="input textarea" rows="4"></textarea>
             </label>
       <button class="button" id="add-button">Добавить</button>
     </div>
   `;
 
     appEl.innerHTML = appHtml;
+
+    
+
+
 
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
