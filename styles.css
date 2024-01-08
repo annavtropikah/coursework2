@@ -113,7 +113,7 @@
 
 .posts-user-header {
   display: flex;
-  flex-direction: row;
+  flex-direction: colomn;
   align-items: center;
   margin-bottom: 12px;
 }
@@ -209,11 +209,4 @@
 
 .-active-like {
   background-image: url("./assets/images/like-active.svg");
-}
-
-.posts-user-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 12px;
 }

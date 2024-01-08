@@ -8,7 +8,8 @@ import {
   POSTS_PAGE,
   USER_POSTS_PAGE,
 } from "./routes.js";
-import { renderPostsPageComponent, renderUserPage } from "./components/posts-page-component.js";
+import { renderPostsPageComponent} from "./components/posts-page-component.js";
+import { renderUserPage } from "./components/user-post-page-component.js";
 import { renderLoadingPageComponent } from "./components/loading-page-component.js";
 import {
   getUserFromLocalStorage,
