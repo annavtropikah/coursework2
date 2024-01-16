@@ -8,7 +8,7 @@ import {
   POSTS_PAGE,
   USER_POSTS_PAGE,
 } from "./routes.js";
-import { renderPostsPageComponent} from "./components/posts-page-component.js";
+import { renderPostsPageComponent } from "./components/posts-page-component.js";
 import { renderUserPage } from "./components/user-post-page-component.js";
 import { renderLoadingPageComponent } from "./components/loading-page-component.js";
 import {
@@ -16,6 +16,7 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./helpers.js";
+import { sanitizeHtml } from "./components/sanitizeHtml.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
@@ -59,8 +60,11 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === POSTS_PAGE) {
-      page = LOADING_PAGE;
-      renderApp();
+      if (!data?.noLoading) {
+        page = LOADING_PAGE;
+        renderApp();
+      }
+
 
       return getPosts({ token: getToken() })
         .then((newPosts) => {
@@ -134,28 +138,22 @@ const renderApp = () => {
         // TODO: реализовать добавление поста в API
 
         const textareaInputElement = document.getElementById("textarea-input");
-    postNew({
-      description: textareaInputElement.value, 
-      imageUrl
-    }).then((response) => {
-      if (response.status === 201) {
+        postNew({
+          description: sanitizeHtml(textareaInputElement.value),
+          imageUrl,
+          token: getToken()
+        }).then((response) => {
+          renderPostsPageComponent()
 
-        renderPostsPageComponent()
-        return
-      }
-      
-      if (response.status === 500) {
-        return Promise.reject("ошибка сервера");
-      }
-      return Promise.reject("не авторизован");
 
-    })
-    .catch((error) => {
- 
-      alert(error);
 
-      console.warn(error);
-    })
+        })
+          .catch((error) => {
+
+            alert(error);
+
+            console.warn(error);
+          })
         console.log("Добавляю пост...", { description, imageUrl });
         goToPage(POSTS_PAGE);
       },

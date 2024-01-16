@@ -1,7 +1,8 @@
 import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, token, getToken } from "../index.js";
-import { addLike, getPosts } from "../api.js";
+import { posts, goToPage, getToken } from "../index.js";
+import { addLike, deleteLike } from "../api.js";
+import { formatDate } from "./formatDate.js";
 
 
 const appEl = document.getElementById("app");
@@ -23,11 +24,11 @@ export function renderPostsPageComponent() {
                 <ul class="posts">
                   <li class="post">
                   <div class="post-header" data-user-id="${post.user.id}">
-                        <img src="${post.imageUrl}" class="post-header__user-image">
+                        <img src="${post.user.imageUrl}" class="post-header__user-image">
                         <p class="post-header__user-name">${post.user.name}</p>
                     </div>
                     <div class="post-image-container">
-                      <img class="post-image" src="${post.user.imageUrl}">
+                      <img class="post-image" src="${post.imageUrl}">
                     </div>
 
 
@@ -36,7 +37,7 @@ export function renderPostsPageComponent() {
 
                     <div class="post-likes">
                   
-                      <button data-post-id="${post.id}" class="like-button ${post.isLiked ? "-active-like" : ''}" data-index="${index}"></button>
+                      <button data-post-id="${post.id}" data-is-liked="${post.isLiked}" class="like-button ${post.isLiked ? "-active-like" : ''}" data-index="${index}"></button>
 
                       <p class="post-likes-text">
                         Нравится: <strong>${post.likes.length}</strong>
@@ -49,10 +50,10 @@ export function renderPostsPageComponent() {
                     </div>
                     <p class="post-text">
                       <span class="user-name">${post.user.name}</span>
-                      ${post.description}
+                      : ${post.description}
                     </p>
                     <p class="post-date">
-                    ${post.createdAt}
+                    ${formatDate(post.createdAt)}
                     </p>
                   </li>
                   </ul>
@@ -82,20 +83,41 @@ export function renderPostsPageComponent() {
   initLikeListeners();
 }
 
-export function initLikeListeners() {
+export function initLikeListeners(userId) {
   const likeButtonList = document.querySelectorAll(".like-button")
   for (const likeButton of likeButtonList) {
     likeButton.addEventListener("click", () => {
       console.log(likeButton.dataset);
-      addLike({ id: likeButton.dataset.postId, token: getToken() })
-      // goToPage(POSTS_PAGE)
+      if (likeButton.dataset.isLiked === "true") {
+        deleteLike({ id: likeButton.dataset.postId, token: getToken() })
+          .then(() => {
+            if (userId) {
+              goToPage(USER_POSTS_PAGE, { userId })
+            }
+            else {
+              goToPage(POSTS_PAGE, { noLoading: true })
+            }
+
+          })
+
+      } else {
+        addLike({ id: likeButton.dataset.postId, token: getToken() })
+          .then(() => {
+            if (userId) {
+              goToPage(USER_POSTS_PAGE, { userId })
+            }
+            else {
+              goToPage(POSTS_PAGE, { noLoading: true })
+            }
+
+          })
+      }
+
     })
+
   }
 
 }
-//1. Запросить новые данные
-//2. Вызвать перерисовку
-
 
 
 

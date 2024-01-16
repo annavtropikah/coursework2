@@ -1,7 +1,9 @@
 import { renderHeaderComponent } from "./header-component.js";
+import { sanitizeHtml } from "./sanitizeHtml.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
+  let imageUrl = "";
   const render = () => {
     // TODO: Реализовать страницу добавления поста
     const appHtml = `
@@ -31,16 +33,16 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     appEl.innerHTML = appHtml;
 
-    
-
-
+    const descriptionIn = document.getElementById("textarea-input")
 
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
-        description: "Описание картинки",
-        imageUrl: "https://image.png",
+        description: sanitizeHtml(descriptionIn.value),
+        imageUrl,
       });
     });
+
+
   };
 
   render();
@@ -48,7 +50,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     element: document.querySelector(".header-container"),
   });
 
-  let imageUrl = "";
+
 
   const uploadImageContainer = appEl.querySelector(".upload-image-container");
   if (uploadImageContainer) {
@@ -59,5 +61,6 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
       },
     });
   }
+
 
 }
