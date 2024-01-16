@@ -61,7 +61,9 @@ export function renderPostsPageComponent() {
                   `;
   }).join('');
 
-  appEl.innerHTML = appHtml;
+  appEl.innerHTML = appHtml || `<div class="page-container">
+  <div class="header-container"></div>
+  <ul class="posts"></ul></div>`;
 
 
   //  не работают лайки по-человечьи(((
